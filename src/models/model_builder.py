@@ -9,6 +9,10 @@ from models.decoder import TransformerDecoder
 from models.encoder import Classifier, ExtTransformerEncoder
 from models.optimizers import Optimizer
 
+
+model_large = 'bert-base-german-cased'
+model_base = 'bert-base-german-cased'
+
 def build_optim(args, model, checkpoint):
     """ Build optimizer """
 
@@ -116,14 +120,20 @@ class Bert(nn.Module):
     def __init__(self, large, temp_dir, finetune=False):
         super(Bert, self).__init__()
         if(large):
-            self.model = BertModel.from_pretrained('bert-large-uncased', cache_dir=temp_dir)
+            self.model = BertModel.from_pretrained(model_large, cache_dir=temp_dir)
         else:
-            self.model = BertModel.from_pretrained('bert-base-uncased', cache_dir=temp_dir)
+            self.model = BertModel.from_pretrained(model_base, cache_dir=temp_dir)
 
         self.finetune = finetune
 
     def forward(self, x, segs, mask):
         if(self.finetune):
+            print("size x: ", x.shape)
+            print("\n")
+            print("size segs: ", segs.shape)
+            print("\n")
+            print("size mask: ", mask.shape)
+            print("\n")
             top_vec, _ = self.model(x, segs, attention_mask=mask)
         else:
             self.eval()
